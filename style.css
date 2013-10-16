@@ -1,0 +1,57 @@
+html, body {
+    position: absolute;
+
+    height: 100%;
+    width: 100%;
+
+    margin:0;
+    padding:0;
+    border: 0;
+
+    font-family: Arial, sans-serif;
+}
+
+.vbox {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+
+    display: -moz-box;
+    -moz-box-orient: vertical;
+
+    display: box;
+    box-orient: vertical;
+}
+
+.vbox-full {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    box-flex: 1;
+}
+
+.vbox-center {
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    box-pack: center;
+}
+
+#main {
+    height: 100%;
+    width: 100%;
+}
+
+#drop {
+    background: lightgray;
+
+    border: 0.5em dashed gray;
+    margin: 10%;
+    border-radius: 30px;
+
+    text-align: center;
+    vertical-align: middle;
+}
+
+#text {
+    font-size: 2em;
+    color: darkgrey;
+}
+
