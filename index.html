@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <script src="scripts/reader.js"></script>
+    <script src="scripts/parser_shw.js"></script>
+</head>
+
+<body>
+    <input type="file" id="fileinput"/>
+
+    <script type="text/javascript">
+
+        function errorHandler(error) { alert(error); }
+
+        function handleFile(evt) {
+            var f = evt.target.files[0];
+            if (!f) {
+                alert("no file selected");
+            } else {
+                var parser;
+                if (ParserSHW.canHandle(f.name, f.type)) {
+                    parser = ParserSHW;
+                } else {
+                    alert("Can't handle file");
+                }
+                if (parser) {
+                    Reader.readTextFile(
+                        f,
+                        function(file, lines) {
+                            parser.parse(
+                                file,
+                                lines,
+                                function(result) {
+                                    console.log(result);
+                                },
+                                errorHandler
+                            )
+                        },
+                        errorHandler
+                    );
+                }
+            }
+        }
+
+        document.getElementById('fileinput').addEventListener('change', handleFile, false);
+
+    </script>
+</body>
