@@ -53,5 +53,6 @@ html, body {
 #text {
     font-size: 2em;
     color: darkgrey;
+    padding: 1em;
 }
 
