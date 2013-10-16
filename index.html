@@ -3,25 +3,44 @@
 <head>
     <script src="scripts/reader.js"></script>
     <script src="scripts/parser_shw.js"></script>
+    <script src="scripts/parser_itn.js"></script>
+    <script src="scripts/exporter_cvs.js"></script>
+
+    <style>
+        #drop {
+            font-family: Arial;
+            min-height: 150px;
+            width: 250px;
+            border: 3px dashed gray;
+            margin: 10px;
+            padding: 10px;
+        }
+    </style>
 </head>
 
 <body>
-    <input type="file" id="fileinput"/>
+
+    <div id="drop">Drop files here to convert.</div>
 
     <script type="text/javascript">
 
         function errorHandler(error) { alert(error); }
 
-        function handleFile(evt) {
-            var f = evt.target.files[0];
+        var registeredParsers = [
+            ParserSHW,
+            ParserITN
+        ];
+
+        function convertFile(f) {
             if (!f) {
-                alert("no file selected");
+                alert("No file to convert");
             } else {
                 var parser;
-                if (ParserSHW.canHandle(f.name, f.type)) {
-                    parser = ParserSHW;
-                } else {
-                    alert("Can't handle file");
+                for(var i = 0; i < registeredParsers.length; i++) {
+                    if (registeredParsers[i].canHandle(f.name, f.type)) {
+                        parser = registeredParsers[i];
+                        break;
+                    }
                 }
                 if (parser) {
                     Reader.readTextFile(
@@ -31,6 +50,7 @@
                                 file,
                                 lines,
                                 function(result) {
+                                    ExporterCSV.exportResult(f.name+".csv", result);
                                     console.log(result);
                                 },
                                 errorHandler
@@ -42,7 +62,49 @@
             }
         }
 
-        document.getElementById('fileinput').addEventListener('change', handleFile, false);
+        function addEventHandler(obj, evt, handler) {
+            if(obj.addEventListener) {
+                // W3C method
+                obj.addEventListener(evt, handler, false);
+            } else if(obj.attachEvent) {
+                // IE method.
+                obj.attachEvent('on'+evt, handler);
+            } else {
+                // Old school method.
+                obj['on'+evt] = handler;
+            }
+        }
+
+        if(window.FileReader) {
+            addEventHandler(window, 'load', function() {
+                var drop   = document.getElementById('drop');
+
+                function cancel(e) {
+                    if (e.preventDefault) { e.preventDefault(); }
+                    return false;
+                }
+
+                // Tells the browser that we *can* drop on this target
+                addEventHandler(drop, 'dragover', cancel);
+                addEventHandler(drop, 'dragenter', cancel);
+
+                addEventHandler(drop, 'drop', function (e) {
+                    e = e || window.event; // get window.event if e argument missing (in IE)
+                    if (e.preventDefault) { e.preventDefault(); } // stops the browser from redirecting off to the image.
+
+
+                    var dt    = e.dataTransfer;
+                    var files = dt.files;
+
+                    convertFile(files[0]);
+
+                    return false;
+                });
+
+            });
+        } else {
+            alert("Use a modern browser!");
+        }
 
     </script>
 </body>
