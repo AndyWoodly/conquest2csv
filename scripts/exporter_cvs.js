@@ -5,7 +5,7 @@ var ExporterCSV = (function() {
         result.forEach(function(row) {
             rowStrings.push(row.join("\t"));
         });
-        var csvString = rowStrings.join("\n");
+        var csvString = "sep=;\n" + rowStrings.join("\n");
         var encodedUri = encodeURI(csvString);
 
         var a = document.createElement('a');
