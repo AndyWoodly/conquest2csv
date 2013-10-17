@@ -3,7 +3,7 @@ var ExporterCSV = (function() {
     function exportResult(fileName, result) {
         var rowStrings = [];
         result.forEach(function(row) {
-            rowStrings.push(row.join(","));
+            rowStrings.push(row.join("\t"));
         });
         var csvString = rowStrings.join("\n");
         var encodedUri = encodeURI(csvString);
